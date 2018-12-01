@@ -8,6 +8,9 @@ using namespace std;
 class vEB
 {
 public:
+    int min = -1; // None
+    int max = -1;
+
     vEB(size_t minSize)
     {
         int k = int(ceil(log2(log2(minSize))));
@@ -30,6 +33,8 @@ public:
 
     void insert(int x)
     {
+        if (x < 0 || x >= uSize)
+            throw "OutOfIndex";
         if (uSize == 2)
         {
             data[x] = true;
@@ -128,7 +133,7 @@ public:
         }
         else
         {
-            if (low(x) > cluster[i]->min)
+            if (low(x) > cluster[i]->min && cluster[i]->min != -1)
             {
                 j = cluster[i]->prediccessor(low(x));
                 if (j == -1)
@@ -159,6 +164,8 @@ public:
 
     void deleteValue(int x)
     {
+        if (x < 0 || x >= uSize)
+            throw "OutOfIndex";
         if (uSize == 2)
         {
             data[x] = false;
@@ -233,8 +240,6 @@ public:
 protected:
     int uSize;
     bool data[2] = { false, false };
-    int min = -1; // None
-    int max = -1;
     vector<vEB*> cluster;
     vEB* summary;
 private:
