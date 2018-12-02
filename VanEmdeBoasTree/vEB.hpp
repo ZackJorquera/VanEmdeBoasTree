@@ -8,9 +8,6 @@ using namespace std;
 class vEB
 {
 public:
-    int min = -1; // None
-    int max = -1;
-
     vEB(size_t minSize)
     {
         int k = int(ceil(log2(log2(minSize))));
@@ -151,12 +148,14 @@ public:
                 i = summary->prediccessor(i);
                 if (i < 0)
                 {
-                    if (summary->min != high(x))
-                        i = summary->min;
+                    if (high(min) < high(x))
+                        i = high(min);
                     else
                         return -1;
                 }
                 j = cluster[i]->max;
+                if (j < 0)
+                    j = low(min);
             }
         }
         return index(i, j);
@@ -216,7 +215,8 @@ public:
     {
         int retVal = min;
         if(retVal != -1)
-            deleteValue(min);
+            
+deleteValue(min);
         return retVal;
     }
 
@@ -238,7 +238,24 @@ public:
 
     }
 
+    int getMin()
+    {
+        return min;
+    }
+
+    int getMax()
+    {
+        return max;
+    }
+
+    int size()
+    {
+        return uSize;
+    }
+
 protected:
+    int min = -1; // None
+    int max = -1;
     int uSize;
     bool data[2] = { false, false };
     vector<vEB*> cluster;
@@ -256,5 +273,74 @@ private:
     int high(int x)
     {
         return int(floor(x / sqrt(double(uSize))));
+    }
+};
+
+template<class T>
+class vEB_Vector
+{
+private:
+    vEB keyvEB;
+    vector<T> data;
+protected:
+public:
+    vEB_Vector(int minSize)
+    {
+        keyvEB = vEB(minSize);
+        data = vector<T>(keyvEB.size());
+    }
+
+    void insert(int key, T value)
+    {
+        if (key >= keyvEB.size())
+            throw "OutOfRange";
+        keyvEB.insert(key);
+        data[key] = value;
+    }
+
+    void deleteValue(int key)
+    {
+        keyvEB.deleteValue(key);
+        //data[key] = NULL; //TODO: what to put here
+    }
+
+    void deleteValueAfter(int key)
+    {
+        key = keyvEB.successor(key);
+        deleteValue(key);
+    }
+
+    void deleteValueBefore(int key)
+    {
+        key = keyvEB.prediccessor(key);
+        deleteValue(key);
+    }
+
+    T* getAfter(int key)
+    {
+        key = keyvEB.successor(key);
+        return &data[key];
+    }
+
+    T* getBefore(int key)
+    {
+        key = keyvEB.prediccessor(key);
+        return &data[key];
+    }
+
+    T pop_front()
+    {
+        int key = keyvEB.pop_front();
+        T retVal = data[key];
+        //data[key] = NULL;
+        return retVal;
+    }
+
+    T pop_back()
+    {
+        int key = keyvEB.pop_back();
+        T retVal = data[key];
+        //data[key] = NULL;
+        return retVal;
     }
 };

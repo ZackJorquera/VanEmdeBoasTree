@@ -26,24 +26,24 @@ namespace UnitTest
             vEB myV(16);
 
             myV.insert(6);
-            Assert::AreEqual(myV.min, 6);
-            Assert::AreEqual(myV.max, 6);
+            Assert::AreEqual(myV.getMin(), 6);
+            Assert::AreEqual(myV.getMax(), 6);
 
             myV.insert(3);
-            Assert::AreEqual(myV.min, 3);
+            Assert::AreEqual(myV.getMin(), 3);
 
             myV.insert(7);
-            Assert::AreEqual(myV.max, 7);
+            Assert::AreEqual(myV.getMax(), 7);
 
             myV.insert(13);
-            Assert::AreEqual(myV.max, 13);
+            Assert::AreEqual(myV.getMax(), 13);
 
             myV.insert(0);
-            Assert::AreEqual(myV.min, 0);
+            Assert::AreEqual(myV.getMin(), 0);
 
             myV.insert(1);
-            Assert::AreNotEqual(myV.min, 1);
-            Assert::AreNotEqual(myV.max, 1);
+            Assert::AreNotEqual(myV.getMin(), 1);
+            Assert::AreNotEqual(myV.getMax(), 1);
 
             myV.insert(2);
             myV.insert(4);
@@ -76,24 +76,24 @@ namespace UnitTest
             vEB myV(256);
 
             myV.insert(6);
-            Assert::AreEqual(myV.min, 6);
-            Assert::AreEqual(myV.max, 6);
+            Assert::AreEqual(myV.getMin(), 6);
+            Assert::AreEqual(myV.getMax(), 6);
 
             myV.insert(3);
-            Assert::AreEqual(myV.min, 3);
+            Assert::AreEqual(myV.getMin(), 3);
 
             myV.insert(107);
-            Assert::AreEqual(myV.max, 107);
+            Assert::AreEqual(myV.getMax(), 107);
 
             myV.insert(237);
-            Assert::AreEqual(myV.max, 237);
+            Assert::AreEqual(myV.getMax(), 237);
 
             myV.insert(0);
-            Assert::AreEqual(myV.min, 0);
+            Assert::AreEqual(myV.getMin(), 0);
 
             myV.insert(76);
-            Assert::AreNotEqual(myV.min, 1);
-            Assert::AreNotEqual(myV.max, 1);
+            Assert::AreNotEqual(myV.getMin(), 1);
+            Assert::AreNotEqual(myV.getMax(), 1);
         }
 
         TEST_METHOD(CanFindSuccessorUnder256)
@@ -114,6 +114,17 @@ namespace UnitTest
             Assert::AreEqual(myV.successor(70), 101);
             Assert::AreEqual(myV.successor(101), 200);
             Assert::AreEqual(myV.successor(237), 255);
+        }
+
+        TEST_METHOD(CanFindPrediccessor16)
+        {
+            vEB myV(16);
+
+            myV.insert(3);
+            myV.insert(5);
+            myV.insert(12);
+
+            Assert::AreEqual(myV.prediccessor(4),3);
         }
 
         TEST_METHOD(CanFindPrediccessorUnder256)
@@ -177,10 +188,10 @@ namespace UnitTest
 
 
             myV.deleteValue(0);
-            Assert::AreEqual(myV.min, 3);
+            Assert::AreEqual(myV.getMin(), 3);
 
             myV.deleteValue(255);
-            Assert::AreEqual(myV.max, 237);
+            Assert::AreEqual(myV.getMax(), 237);
 
             Assert::IsFalse(myV.trySearch(0));
             Assert::IsFalse(myV.trySearch(255));
@@ -189,19 +200,19 @@ namespace UnitTest
             Assert::IsFalse(myV.trySearch(107));
             myV.deleteValue(237);
             Assert::IsFalse(myV.trySearch(237));
-            Assert::AreEqual(myV.max, 187);
+            Assert::AreEqual(myV.getMax(), 187);
             myV.deleteValue(76);
             Assert::IsFalse(myV.trySearch(76));
             myV.deleteValue(187);
             Assert::IsFalse(myV.trySearch(187));
-            Assert::AreEqual(myV.max, 6);
+            Assert::AreEqual(myV.getMax(), 6);
             myV.deleteValue(3);
             Assert::IsFalse(myV.trySearch(3));
-            Assert::AreEqual(myV.min, 6);
+            Assert::AreEqual(myV.getMin(), 6);
             myV.deleteValue(6);
             Assert::IsFalse(myV.trySearch(6));
-            Assert::AreEqual(myV.min, -1);
-            Assert::AreEqual(myV.max, -1);
+            Assert::AreEqual(myV.getMin(), -1);
+            Assert::AreEqual(myV.getMax(), -1);
         }
 
         TEST_METHOD(CanPopFrontAndBack256)
@@ -238,8 +249,8 @@ namespace UnitTest
             Assert::IsFalse(myV.trySearch(107));
 
 
-            Assert::AreEqual(myV.min, -1);
-            Assert::AreEqual(myV.max, -1);
+            Assert::AreEqual(myV.getMin(), -1);
+            Assert::AreEqual(myV.getMax(), -1);
         }
 
         TEST_METHOD(CanSort256)
