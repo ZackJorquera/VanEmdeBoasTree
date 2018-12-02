@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
 
+#include <algorithm>
+#include <ctime>
+#include <iostream>
+
 #include "../VanEmdeBoasTree/vEB.hpp"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -273,6 +277,53 @@ namespace UnitTest
                 Assert::IsFalse(last < v);
                 last = v;
             }
+        }
+
+        TEST_METHOD(StressTestLessThen1sec)
+        {
+            int * dataArray = new int[65536];
+
+            for (int i = 0; i < 65536; i++)
+            {
+                dataArray[i] = i; //any dups will be removed
+            }
+
+            random_shuffle(&dataArray[0], &dataArray[65535]);
+            
+            //start timer
+            std::clock_t start;
+            start = std::clock();
+            //
+
+            vEB myV(65536);
+
+            for (int i = 0; i < 65536; i++)
+            {
+                myV.insert(dataArray[i]);
+            }
+
+            int last = myV.pop_front();
+
+            for (int i = 0; i < 65536 - 1; i++)
+            {
+                try
+                {
+                    int v = myV.pop_front();
+
+                    if (v == -1)
+                        break;
+
+                    if (last > v)
+                        Assert::IsFalse(last > v);
+                    last = v;
+                }
+                catch (...) {}
+            }
+
+            //end timer
+            double duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
+            //print time
+            Assert::IsTrue(duration < 1);
         }
     };
 }

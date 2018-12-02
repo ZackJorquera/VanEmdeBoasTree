@@ -215,7 +215,8 @@ public:
     int pop_front()
     {
         int retVal = min;
-        deleteValue(min);
+        if(retVal != -1)
+            deleteValue(min);
         return retVal;
     }
 
