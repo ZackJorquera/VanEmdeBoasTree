@@ -11,7 +11,9 @@ public:
     vEB(size_t minSize)
     {
         int k = int(ceil(log2(log2(minSize))));
-        uSize = int(pow(2, pow(2, k)));
+        if (k > 4)
+            throw "To Big!!!!!";
+        uSize = int(pow(2, int(pow(2, k))));
 
         if(uSize > 2)
         {
@@ -28,13 +30,33 @@ public:
     }
     vEB() {}
 
+    ~vEB()
+    {
+        if (summary != nullptr)
+        {
+            summary->~vEB();
+            delete summary;
+            summary = nullptr;
+        }
+
+        for (int i = cluster.size() - 1; i >= 0; i--)
+        {
+            cluster[i]->~vEB();
+            delete cluster[i];
+            cluster.pop_back();
+        }
+
+        cluster.~vector();
+
+    }
+
     void insert(int x)
     {
         if (x < 0 || x >= uSize)
             throw "OutOfIndex";
         if (uSize == 2)
         {
-            data[x] = true;
+            //data[x] = true;
 
             if (min == -1)
             {
@@ -89,7 +111,7 @@ public:
 
         if (uSize == 2)
         {
-            if (data[1] && x == 0)
+            if (max == 1 && x == 0)//if (data[1] && x == 0)
                 j = 1;
             else
                 j = 2;
@@ -123,7 +145,7 @@ public:
 
         if (uSize == 2)
         {
-            if (data[0] && x == 1)
+            if(min == 0 && x == 1)//if (data[0] && x == 1)
                 j = 0;
             else
                 j = -1;
@@ -167,16 +189,14 @@ public:
             throw "OutOfIndex";
         if (uSize == 2)
         {
-            data[x] = false;
+            //data[x] = false;
 
             if (min == x && max == x)
             {
                 min = -1;
                 max = -1;
-                return;
             }
-
-            if (min == x)
+            else if (min == x)
                 min = max;
             else
                 max = min;
@@ -257,14 +277,14 @@ protected:
     int min = -1; // None
     int max = -1;
     int uSize;
-    bool data[2] = { false, false };
+    //bool data[2] = { false, false };
     vector<vEB*> cluster;
-    vEB* summary;
+    vEB* summary = nullptr;
 private:
 
     int index(int i, int j)
     {
-        return i * sqrt(double(uSize)) + j;
+        return i * int(sqrt(double(uSize))) + j;
     }
     int low(int x)
     {

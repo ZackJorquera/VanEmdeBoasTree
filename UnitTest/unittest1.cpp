@@ -18,7 +18,7 @@ namespace UnitTest
         TEST_METHOD(canInit)
         {
             vEB myV(14);
-            myV = vEB(18);
+            vEB myV2(18);
         }
 
         TEST_METHOD(CanInsertValuesUnder16)

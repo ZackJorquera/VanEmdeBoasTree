@@ -23,5 +23,8 @@
     <ClInclude Include="vEB.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Bench.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
